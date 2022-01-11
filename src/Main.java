@@ -5,49 +5,102 @@ public class Main {
     public static void main(String[] args) {
         // Поехали!
         Scanner scanner = new Scanner(System.in);
-        int command;
-        StepTracker stepTracker = new StepTracker();
+        String year = "";
+        String[] urlMonth = new String[12];     //Массив ссылок на месячные отчеты
+        String urlYear;     //Ссылка на годовой отчет
+        MonthReport[] monthReports = new MonthReport[12];       //Массив объектов месячных отчетов
+        YearReport yearReport = null;   //Объект годового отчета
+        String command;
 
-
-        while(true){
+        while (true) {
             printMenu();
-            command = Integer.parseInt(scanner.next());
+            command = scanner.next();
+            if (command.equals("1")) {
+                System.out.print("За какой год необходимо считать месячные отчеты > ");
+                year = scanner.next();
+                for (int i = 1; i <= 12; i++) {
+                    if (i < 10) {
+                        urlMonth[i - 1] = "./resources/m." + year + "0" + i + ".csv";
+                        monthReports[i - 1] = new MonthReport(i - 1);
+                        monthReports[i - 1].readMonthlyReport(urlMonth[i - 1]);
+                    } else {
+                        urlMonth[i - 1] = "./resources/m." + year + "" + i + ".csv";
+                        monthReports[i - 1] = new MonthReport(i - 1);
+                        monthReports[i - 1].readMonthlyReport(urlMonth[i - 1]);
+                    }
+                }
 
-            if (command == 1){
-                //Ввод данных с клавиатуры
-                System.out.print("Введите название месяца > ");
-                String month = scanner.next();
-                System.out.print("Введите номер дня > ");
-                int day = scanner.nextInt();
-                System.out.print("Введите кол-во шагов > ");
-                int step = scanner.nextInt();
+            } else if (command.equals("2")) {
+                System.out.print("За какой год необходимо считать годовые отчеты > ");
+                year = scanner.next();
+                urlYear = "./resources/y." + year + ".csv";
+                yearReport = new YearReport();
+                yearReport.readYearReport(urlYear);
 
-                stepTracker.saveStepsPerDay(month, day, step);
+            } else if (command.equals("3")) {
+                boolean incorrectInCheckReport = false;
+                boolean isObjectCreated = false;
+                for (int i = 0; i < monthReports.length; i++) {
+                    if (monthReports[i] != null && yearReport != null) {
+                        if (monthReports[i].isRead && yearReport.isRead) {
+                            if (monthReports[i].checkReports(yearReport)){
+                                incorrectInCheckReport=true;
+                            }
+                            isObjectCreated = true;
+                        }
+                    }
+                }
+                if (!incorrectInCheckReport && isObjectCreated) {
+                    System.out.println("Операция завершена успешно");
+                }else if (!isObjectCreated){
+                    System.out.println("Отчеты не считаны");
+                }
 
-            }else if (command == 2){
-                System.out.print("Введите месяц за который необходимо показать статистику > ");
-                String month = scanner.next();
-                stepTracker.printStatistic(month);
-            }else if (command == 3){
-                System.out.print("Введите число целевых шагов > ");
-                int targetSteps = scanner.nextInt();
-                stepTracker.setTargetSteps(targetSteps);
-            }else if (command == 4){
-                System.out.println("До свидания!");
+            } else if (command.equals("4")) {
+                for (int i = 0; i < monthReports.length; i++) {
+                    if (monthReports[i] != null) {
+                        if (monthReports[i].isRead) {
+                            System.out.println("Отчет за " + monthReports[i].getCurrentMonth());
+                            monthReports[i].printProfitableItem();
+                            monthReports[i].printMaxExpense();
+                        }
+                    } else {
+                        System.out.println("Необходимо сперва считать отчет");
+                        break;
+                    }
+                }
+
+            } else if (command.equals("5")) {
+                if (yearReport != null) {
+                    if (yearReport.isRead) {
+                        System.out.println("Отчет за " + year + " год.");
+                        yearReport.printProfitByMonth();
+                        yearReport.printAverageExpenseInYear();
+                        yearReport.printAverageProfitInYear();
+                    }
+                } else {
+                    System.out.println("Необходимо сперва считать отчет");
+                }
+
+            } else if (command.equalsIgnoreCase("exit")) {
                 break;
-            }else {
-                System.out.println("Такой команды не существует, повторите ввод");
+
+            } else {
+                System.out.println("Неизвестная команда");
             }
         }
     }
 
     //Метод печати основного меню на экран
-    public static void printMenu(){
-        System.out.println("Основное меню!");
-        System.out.println("1. Введите количество шагов за определённый день");
-        System.out.println("2. Напечатать статистику за определённый месяц");
-        System.out.println("3. Изменить цель по количеству шагов в день");
-        System.out.println("4. Выйти из приложения");
+    public static void printMenu() {
+        System.out.println();
+        System.out.println("***** Основное меню! ******");
+        System.out.println("1. Считать все месячные отчёты");
+        System.out.println("2. Считать годовой отчёт");
+        System.out.println("3. Сверить отчёты");
+        System.out.println("4. Вывести информацию о всех месячных отчётах");
+        System.out.println("5. Вывести информацию о годовом отчёте");
+        System.out.println("Для выхода введите exit");
         System.out.print("Введите номер команды > ");
     }
 }
