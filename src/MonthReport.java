@@ -13,6 +13,7 @@ public class MonthReport {
     private int currentMonth;       //Номер текущего месяца
     String[] monthsName = {"январь", "февраль", "март", "апрель", "май", "июнь",
             "июль", "август", "сентябрь", "ноябрь", "декабрь"};
+    CheckReportData checkReportData = new CheckReportData();
 
     //Инициализация номера месяца
     MonthReport(int currentMonth) {
@@ -21,6 +22,7 @@ public class MonthReport {
 
     //Метод считывает CSV файл месячного отчета и копирует данные в массивы ArrayList
     public void readMonthlyReport(String url) {
+        boolean isCorrectFile = true;
         report = csvReader.readCSV(url);
         if (report != null) {
             lines = report.split("\\n");
@@ -28,12 +30,21 @@ public class MonthReport {
                 lines[i] = lines[i].replace("\r", "");
                 linesContent = lines[i].split(",");
 
-                itemName.add(linesContent[0]);
-                isExpense.add(Boolean.parseBoolean(linesContent[1]));
-                quantity.add(Integer.parseInt(linesContent[2]));
-                sumOfOne.add(Integer.parseInt(linesContent[3]));
+                if (!checkReportData.isEmptyData(linesContent[0]) && checkReportData.isBooleanData(linesContent[1]) &&
+                        checkReportData.isPositiveNumber(linesContent[2]) && checkReportData.isPositiveNumber(linesContent[3])) {
+                    itemName.add(linesContent[0]);
+                    isExpense.add(Boolean.parseBoolean(linesContent[1]));
+                    quantity.add(Integer.parseInt(linesContent[2]));
+                    sumOfOne.add(Integer.parseInt(linesContent[3]));
+                } else {
+                    System.out.println("В файле " + url.replace("./resources/", "") + " имеются ошибки в строке " + i + ". Исправьте файл и считайте его заново.");
+                    isCorrectFile = false;
+                    break;
+                }
+
             }
-            isRead = true;
+            isRead = isCorrectFile;
+
         }
     }
 
@@ -96,8 +107,10 @@ public class MonthReport {
     }
 
     //Метод возвращает название текущего месяца на русском
-    public String getCurrentMonth(){
+    public String getCurrentMonth() {
         return monthsName[currentMonth];
     }
+
+
 
 }

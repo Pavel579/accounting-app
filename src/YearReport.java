@@ -13,32 +13,43 @@ public class YearReport {
     private ArrayList<Boolean> isExpense = new ArrayList<>();   //Список столбца isExpense из таблицы файла
     private int[][] profitExpense = new int[12][2]; //Массив [месяц][0 - доходы, 1 - расходы]
     int monthQuantityInReport;      //Заполненное кол-во месяцев в отчете
+    CheckReportData checkReportData = new CheckReportData();
 
     /* Метод читает данные из файла CSV годового отчета,
      копирует данные в массивы ArrayList и заполняет массив profitExpense
     данными о доходах и расходах по месяцам */
     public void readYearReport(String url) {
         report = csvReader.readCSV(url);
+        boolean isCorrectFile = true;
         if (report != null) {
             lines = report.split("\\n");
             for (int i = 1; i < lines.length; i++) {
                 lines[i] = lines[i].replace("\r", "");
                 linesContent = lines[i].split(",");
 
-                month.add(Integer.parseInt(linesContent[0]));
-                amount.add(Integer.parseInt(linesContent[1]));
-                isExpense.add(Boolean.parseBoolean(linesContent[2]));
-
-            }
-
-            for (int i = 0; i < month.size(); i++) {
-                if (isExpense.get(i)) {
-                    profitExpense[month.get(i) - 1][1] += amount.get(i);
-                } else {
-                    profitExpense[month.get(i) - 1][0] += amount.get(i);
+                if (checkReportData.isPositiveNumber(linesContent[0]) && checkReportData.isPositiveNumber(linesContent[1]) && checkReportData.isBooleanData(linesContent[2])){
+                    month.add(Integer.parseInt(linesContent[0]));
+                    amount.add(Integer.parseInt(linesContent[1]));
+                    isExpense.add(Boolean.parseBoolean(linesContent[2]));
+                }else {
+                    System.out.println("В файле " + url.replace("./resources/", "") + " имеются ошибки в строке " + i + ". Исправьте файл и считайте его заново.");
+                    isCorrectFile = false;
+                    break;
                 }
             }
-            isRead = true;
+
+            if (isCorrectFile){
+                for (int i = 0; i < month.size(); i++) {
+                    if (isExpense.get(i)) {
+                        profitExpense[month.get(i) - 1][1] += amount.get(i);
+                    } else {
+                        profitExpense[month.get(i) - 1][0] += amount.get(i);
+                    }
+                }
+            }
+
+            isRead = isCorrectFile;
+
         }
     }
 

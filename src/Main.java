@@ -40,6 +40,7 @@ public class Main {
             } else if (command.equals("3")) {
                 boolean incorrectInCheckReport = false;
                 boolean isObjectCreated = false;
+                boolean isCorrectFile = true;
                 for (int i = 0; i < monthReports.length; i++) {
                     if (monthReports[i] != null && yearReport != null) {
                         if (monthReports[i].isRead && yearReport.isRead) {
@@ -47,13 +48,17 @@ public class Main {
                                 incorrectInCheckReport=true;
                             }
                             isObjectCreated = true;
+                        }else {
+                            isCorrectFile = false;
                         }
                     }
                 }
-                if (!incorrectInCheckReport && isObjectCreated) {
+                if (!incorrectInCheckReport && isObjectCreated && isCorrectFile) {
                     System.out.println("Операция завершена успешно");
                 }else if (!isObjectCreated){
                     System.out.println("Отчеты не считаны");
+                }else if (!isCorrectFile){
+                    System.out.println("В файлах ошибки");
                 }
 
             } else if (command.equals("4")) {
@@ -77,6 +82,8 @@ public class Main {
                         yearReport.printProfitByMonth();
                         yearReport.printAverageExpenseInYear();
                         yearReport.printAverageProfitInYear();
+                    }else {
+                        System.out.println("Отчет необходимо исправить");
                     }
                 } else {
                     System.out.println("Необходимо сперва считать отчет");
