@@ -15,6 +15,7 @@ public class MonthReport {
             "июль", "август", "сентябрь", "ноябрь", "декабрь"};
     CheckReportData checkReportData = new CheckReportData();
 
+
     //Инициализация номера месяца
     MonthReport(int currentMonth) {
         this.currentMonth = currentMonth;
@@ -110,7 +111,6 @@ public class MonthReport {
     public String getCurrentMonth() {
         return monthsName[currentMonth];
     }
-
 
 
 }

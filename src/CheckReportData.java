@@ -1,4 +1,5 @@
 public class CheckReportData {
+    //Проверка строки на положительное целочисленное значение
     public boolean isPositiveNumber(String s) {
         if (s == null || s.isEmpty()) {
             return false;
@@ -11,6 +12,7 @@ public class CheckReportData {
         return true;
     }
 
+    //Проверка на пустую строку
     public boolean isEmptyData(String s) {
         if (s == null || s.isEmpty()) {
             return true;
@@ -19,6 +21,7 @@ public class CheckReportData {
         }
     }
 
+    //Проверка строки на Boolean
     public boolean isBooleanData(String s) {
         if (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("false")) {
             return true;

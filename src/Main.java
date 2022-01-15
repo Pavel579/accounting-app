@@ -30,6 +30,7 @@ public class Main {
                     }
                 }
 
+
             } else if (command.equals("2")) {
                 System.out.print("За какой год необходимо считать годовые отчеты > ");
                 year = scanner.next();
@@ -44,20 +45,20 @@ public class Main {
                 for (int i = 0; i < monthReports.length; i++) {
                     if (monthReports[i] != null && yearReport != null) {
                         if (monthReports[i].isRead && yearReport.isRead) {
-                            if (monthReports[i].checkReports(yearReport)){
-                                incorrectInCheckReport=true;
+                            if (monthReports[i].checkReports(yearReport)) {
+                                incorrectInCheckReport = true;
                             }
                             isObjectCreated = true;
-                        }else {
+                        } else {
                             isCorrectFile = false;
                         }
                     }
                 }
                 if (!incorrectInCheckReport && isObjectCreated && isCorrectFile) {
                     System.out.println("Операция завершена успешно");
-                }else if (!isObjectCreated){
+                } else if (!isObjectCreated) {
                     System.out.println("Отчеты не считаны");
-                }else if (!isCorrectFile){
+                } else if (!isCorrectFile) {
                     System.out.println("В файлах ошибки");
                 }
 
@@ -76,13 +77,13 @@ public class Main {
                 }
 
             } else if (command.equals("5")) {
-                if (yearReport != null) {
+                if (yearReport != null && yearReport.isFileExist) {
                     if (yearReport.isRead) {
                         System.out.println("Отчет за " + year + " год.");
                         yearReport.printProfitByMonth();
                         yearReport.printAverageExpenseInYear();
                         yearReport.printAverageProfitInYear();
-                    }else {
+                    } else {
                         System.out.println("Отчет необходимо исправить");
                     }
                 } else {
